@@ -123,12 +123,12 @@ class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFacto
             }
         }
         db.close()
-        db = this.readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
-        cursor.moveToFirst()
-        do{
-            Log.d("TestDB", cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2))
-        } while (cursor.moveToNext())
+//        db = this.readableDatabase
+//        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
+//        cursor.moveToFirst()
+//        do{
+//            Log.d("TestDB", cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2))
+//        } while (cursor.moveToNext())
     }
 
 }
