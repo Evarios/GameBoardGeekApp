@@ -14,12 +14,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null) {
-            if(doesDatabaseExist(applicationContext, DB_NAME)){
-                loadMainScreen(savedInstanceState)
-            }
-            else{
-                loadConfiguration(savedInstanceState)
-            }
+//            if(doesDatabaseExist(applicationContext, DB_NAME)){
+//                loadMainScreen(savedInstanceState)
+//            }
+//            else{
+//                loadConfiguration(savedInstanceState)
+//            }
+            loadGameList(savedInstanceState)
         }
     }
 
@@ -39,6 +40,13 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.commit {
             setReorderingAllowed(true)
             replace(R.id.fragment_placeholder, MainScreenFragment())
+        }
+    }
+
+    fun loadGameList(savedInstanceState: Bundle?){
+        supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            replace(R.id.fragment_placeholder, GamesFragment())
         }
     }
 

@@ -130,5 +130,60 @@ class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFacto
 //            Log.d("TestDB", cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2))
 //        } while (cursor.moveToNext())
     }
+    fun getGameNames(): ArrayList<String>{
+        var names = ArrayList<String>()
+        var db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
+        cursor.moveToFirst()
+        do{
+            names.add(cursor.getString(cursor.getColumnIndex("TITLE")))
+        } while (cursor.moveToNext())
+        return names
+    }
+
+    fun getGameYears(): ArrayList<String>{
+        var years = ArrayList<String>()
+        var db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
+        cursor.moveToFirst()
+        do{
+            years.add(cursor.getString(cursor.getColumnIndex("RELEASE_YEAR")))
+        } while (cursor.moveToNext())
+        return years
+    }
+
+    fun getBGGIDs(): ArrayList<String>{
+        var IDs = ArrayList<String>()
+        var db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
+        cursor.moveToFirst()
+        do{
+            IDs.add(cursor.getString(cursor.getColumnIndex("BGG_ID")))
+        } while (cursor.moveToNext())
+        return IDs
+    }
+
+    fun getGameRanks(): ArrayList<String>{
+        var gameRanks = ArrayList<String>()
+        var db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
+        cursor.moveToFirst()
+        do{
+            gameRanks.add(cursor.getString(cursor.getColumnIndex("RANKING")))
+        } while (cursor.moveToNext())
+        return gameRanks
+    }
+
+    fun getGameIMGs(): ArrayList<String>{
+        var gameRanks = ArrayList<String>()
+        var db = this.readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
+        cursor.moveToFirst()
+        do{
+            gameRanks.add(cursor.getString(cursor.getColumnIndex("IMG_URL")))
+        } while (cursor.moveToNext())
+        return gameRanks
+    }
+
 
 }

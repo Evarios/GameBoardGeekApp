@@ -20,7 +20,7 @@
         android:layout_marginLeft="10dp"
         android:textSize="30dp"
         android:textColor="#1E90FF"
-        android:id="@+id/textGameNaME"
+        android:id="@+id/textGameName"
         android:layout_row="0"
         android:layout_column="1" />
 
