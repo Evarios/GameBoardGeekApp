@@ -14,12 +14,12 @@
         android:layout_column="0" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_columnWeight="1"
         android:layout_marginLeft="10dp"
-        android:textSize="30dp"
-        android:textColor="#1E90FF"
+        android:textSize="20dp"
+        android:textColor="#FC1E90FF"
         android:id="@+id/textGameName"
         android:layout_row="0"
         android:layout_column="1" />

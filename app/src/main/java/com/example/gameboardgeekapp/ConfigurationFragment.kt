@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_configuration.*
 
 class ConfigurationFragment : Fragment() {
@@ -27,6 +28,11 @@ class ConfigurationFragment : Fragment() {
             val userName = idEnterUsername.text.toString()
             db.addUser(userName)
             idEnterUsername.text.clear()
+            val text = "Trwa synchronizacja"
+            val duration = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(requireActivity().applicationContext, text, duration)
+            toast.show()
+            Thread.sleep(2_000)
             (activity as MainActivity).loadMainScreen(savedInstanceState)
         }
     }

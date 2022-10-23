@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_games.*
+import kotlinx.android.synthetic.main.fragment_main_screen.*
 import java.io.InputStream
 import java.net.URL
 
@@ -40,6 +41,10 @@ class GamesFragment : Fragment() {
         val imgs = db.getGameIMGs()
         val myListAdapter = GameDataHandler(requireActivity(), gameNames = names, gameYears = years, bggIDs = BGGIDs, gameRanks = ranks, gameImageUrls = imgs)
         gameListView.adapter = myListAdapter
+        idMainMenu.setOnClickListener {
+            val db = DBHelper(requireActivity().applicationContext, null)
+            (activity as MainActivity).loadMainScreen(savedInstanceState)
+        }
     }
 
 }

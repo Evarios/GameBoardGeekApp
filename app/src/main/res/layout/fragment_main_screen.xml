@@ -8,9 +8,18 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <!--Edit text to enter course name-->
     <TextView
         android:id="@+id/userName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/userGameNum"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/userLastSync"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"/>
@@ -21,5 +30,19 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="Usuń dane"
+        android:textAllCaps="false" />
+    <Button
+        android:id="@+id/idGameData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Lista gier"
+        android:textAllCaps="false" />
+    <Button
+        android:id="@+id/idSync"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Synchronizuj"
         android:textAllCaps="false" />
 </LinearLayout>

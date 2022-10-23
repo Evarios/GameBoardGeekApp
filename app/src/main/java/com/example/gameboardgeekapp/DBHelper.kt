@@ -13,11 +13,12 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
 import org.w3c.dom.NodeList
-import java.io.BufferedReader
-import java.io.File
-import java.io.InputStream
-import javax.xml.parsers.DocumentBuilder
+import org.xml.sax.InputSource
+import java.io.StringReader
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.collections.ArrayList
 
 class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFactory?) :
     SQLiteOpenHelper(context, DB_NAME, factory, DB_VERSION) {
@@ -48,8 +49,7 @@ class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFacto
         val db = this.writableDatabase
         db.insert("USERS",null, values)
         db.close()
-        //sync(username)
-        parseXMLtoDB()
+        sync(username)
     }
     fun getUser(): Cursor? {
         val db = this.readableDatabase
@@ -63,26 +63,36 @@ class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFacto
         val stringRequest = StringRequest(Request.Method.GET, url,
             { response ->
                 responseString = response.toString()
-                response.toString()
+                val xmlString = response.toString()
+                if(xmlString == "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>\n" +
+                    "<message>\n" +
+                    "\tYour request for this collection has been accepted and will be processed.  Please try again later for access.\n" +
+                    "</message>"){
+                    Thread.sleep(2_000)
+                    sync(username)
+                }
+                else {
+                    parseXMLtoDB(xmlString)
+                }
             },
             { error ->
-                Log.e("MainActivity", "loadDogImage error: ${error.localizedMessage}")
+                Log.e("MainActivity", "error: ${error.localizedMessage}")
             })
         queue.add(stringRequest)
     }
 
-    fun parseXMLtoDB(){
+    fun parseXMLtoDB(xml: String){
 //        val inputStream: InputStream = context.assets.open("collection.xml")
 //        val size: Int = inputStream.available()
 //        val buffer = ByteArray(size)
 //        inputStream.read(buffer)
 //        var string = String(buffer)
 
-        val input: InputStream = context.assets.open("collection.xml")
-        val dbFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
-        val dBuilder: DocumentBuilder = dbFactory.newDocumentBuilder()
+//        val input: InputStream = context.assets.open("collection.xml")
+//        val dbFactory: DocumentBuilderFactory = DocumentBuilderFactory.newInstance()
+//        val dBuilder: DocumentBuilder = dbFactory.newDocumentBuilder()
         //var xmlString = input.toString()
-        val doc: Document = dBuilder.parse(input)
+        val doc: Document = loadXMLFromString(xml)
 
         val element: Element = doc.documentElement
         element.normalize()
@@ -90,6 +100,7 @@ class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFacto
         val nList: NodeList = doc.getElementsByTagName("item")
         var db = this.writableDatabase
         db.execSQL("DELETE FROM GAMES")
+        var gameNum = nList.length
         for (i in 0 until nList.length) {
             val node: Node = nList.item(i)
             if (node.nodeType == Node.ELEMENT_NODE) {
@@ -99,11 +110,14 @@ class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFacto
                 if(element2.getElementsByTagName("yearpublished").item(0) != null){
                     yearPublishedString =
                         element2.getElementsByTagName("yearpublished").item(0).textContent
-                } else
-                {
-
                 }
-                val imgUrlString = element2.getElementsByTagName("thumbnail").item(0).textContent
+                var imgUrlString = ""
+                if(element2.getElementsByTagName("thumbnail").item(0) != null){
+                    imgUrlString = element2.getElementsByTagName("thumbnail").item(0).textContent
+                }
+                else{
+                    imgUrlString = "https://pbs.twimg.com/profile_images/1443921741328359461/B6z3_oN3_400x400.jpg"
+                }
                 val bggIdString = element2.getAttribute("objectid")
                 val ratingItem = element2.getElementsByTagName("stats").item(0) as Element
                 val statsItem = ratingItem.getElementsByTagName("rating").item(0) as Element
@@ -122,14 +136,21 @@ class DBHelper(private val context: Context, factory: SQLiteDatabase.CursorFacto
                 db.insert("GAMES", null, values)
             }
         }
+
+        val userValues = ContentValues()
+        userValues.put("GAME_NUM", gameNum)
+        userValues.put("LAST_SYNCED", SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date()))
+        db.update("USERS", userValues, "ID = ?", arrayOf("1"))
         db.close()
-//        db = this.readableDatabase
-//        val cursor = db.rawQuery("SELECT * FROM GAMES", null)
-//        cursor.moveToFirst()
-//        do{
-//            Log.d("TestDB", cursor.getString(0) + " " + cursor.getString(1) + " " + cursor.getString(2))
-//        } while (cursor.moveToNext())
     }
+
+    fun loadXMLFromString(xml: String): Document {
+        val factory = DocumentBuilderFactory.newInstance()
+        val builder = factory.newDocumentBuilder()
+        val inputXML = InputSource(StringReader(xml))
+        return builder.parse(inputXML)
+    }
+
     fun getGameNames(): ArrayList<String>{
         var names = ArrayList<String>()
         var db = this.readableDatabase
